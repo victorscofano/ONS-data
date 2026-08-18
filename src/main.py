@@ -1,0 +1,38 @@
+from src.extract import extract_csv
+from src.consolidate import consolidate
+from src.load import load
+import glob
+
+def main():
+    """
+    Responsável pela orquestração do pipeline.
+    
+    => Funções:
+
+            - consolidate()
+                Responsável por consolidar os arquivos .csv em apenas um dataframe.
+            
+            - load()
+                Responsável por carregar os arquivos consolidados no banco de dados.
+        
+            - glob()
+                Responsável por procurar todos os arquivos que combinam com o padrão dos diretórios/arquivos.
+            
+            - sorted()
+                Responsável por garantir a ordem cronológica.
+    """
+
+    # carrega os arquivos de carga diária
+    caminhos_carga = sorted(glob.glob("data/raw/CARGA_ENERGIA_*.csv"))
+    df_carga = consolidate(caminhos_carga)
+    load(df_carga, "data/processed/database.db", "carga_consolidada")
+
+    # carrega os arquivos de balanço dos subsistemas
+    caminhos_balanco = sorted(glob.glob("data/raw/BALANCO_ENERGIA_SUBSISTEMA_*.csv"))
+    df_balanco = consolidate(caminhos_balanco)
+    load(df_balanco, "data/processed/database.db", "balanco_consolidado")
+
+
+
+if __name__ == "__main__":
+    main()
