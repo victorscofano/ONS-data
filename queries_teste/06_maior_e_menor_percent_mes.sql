@@ -5,24 +5,24 @@
 */
 
 SELECT
-        nom_subsistema,
+        nom_subsistema AS subsistema,
         mes,
-        percentEolicaMes
+        percent_eolica
 FROM (
     SELECT
             row_number() OVER (
-            PARTITION BY nom_subsistema ORDER BY percentEolicaMes DESC) AS topoPercentMaior,
+            PARTITION BY nom_subsistema ORDER BY percent_eolica DESC) AS topoPercentMaior,
             row_number() OVER (
-            PARTITION BY nom_subsistema ORDER BY percentEolicaMes) AS topoPercentMenor,
+            PARTITION BY nom_subsistema ORDER BY percent_eolica) AS topoPercentMenor,
             nom_subsistema,
             mes,
-            percentEolicaMes
+            percent_eolica
     FROM (
 
         SELECT
                 nom_subsistema,
                 mes,
-                round((totalEolicaMes * 100.0 / NULLIF(totalGeradoMes, 0)), 2) AS percentEolicaMes
+                round((totalEolicaMes * 100.0 / NULLIF(totalGeradoMes, 0)), 2) AS percent_eolica
         FROM (
         
             SELECT
