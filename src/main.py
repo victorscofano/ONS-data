@@ -42,6 +42,10 @@ def main():
     df_ena = consolidate(caminhos_ena)
     load(df_ena, "data/processed/database.db", "ena_consolidado")
 
+    # carrega os arquivos de Intercâmbio dos subsistemas
+    caminhos_intercamb =sorted(glob.glob("data/raw/INTERCAMBIO_NACIONAL_*.csv"))
+    df_intercamb = consolidate(caminhos_intercamb)
+    load(df_intercamb, "data/processed/database.db", "intercambio_consolidado")
 
 if __name__ == "__main__":
     main()

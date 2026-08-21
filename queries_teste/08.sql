@@ -31,14 +31,27 @@ Comparação final:
 ena_armazenavel_regiao_percentualmlt  (ENA armazenável, % da MLT)
         vs
 ear_verif_subsistema_percentual        (EAR, % da capacidade máxima)
+
+-------------------------------------------------------------------------------------------
+"Quanto tempo leva, por subsistema, para uma chuva forte (ENA alta) 
+se refletir no nível dos reservatórios (EAR)?"
+lembrando que chuva não enche reservatório instantaneamente!!
 */
 
 SELECT
-    t1.id_subsistema,
-    ena_armazenavel_regiao_percentualmlt,
-    ear_verif_subsistema_percentual
+    CASE
+        WHEN t1.id_subsistema = 'N' THEN 'Norte'
+        WHEN t1.id_subsistema = 'NE' THEN 'Nordeste'
+        WHEN t1.id_subsistema = 'S' THEN 'Sul'
+        WHEN t1.id_subsistema = 'SE' THEN 'Sudeste'
+    END AS subsistema,
+    t1.ena_data AS dia,
+    ena_armazenavel_regiao_percentualmlt AS ena_percentual,
+    ear_verif_subsistema_percentual AS ear_percentual
 
-FROM ear_consolidado AS t1
-LEFT JOIN ena_consolidado AS t2
+FROM ena_consolidado AS t1
+LEFT JOIN ear_consolidado AS t2
 ON t1.id_subsistema = t2.id_subsistema
-AND t1.ear_data = t2.ena_data
+AND t1.ena_data = t2.ear_data
+
+ORDER BY t1.id_subsistema, t1.ena_data

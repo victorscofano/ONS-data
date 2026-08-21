@@ -1,5 +1,5 @@
 #%%
-from config import QUERIES_DIR, DATABASE_PATH, QUERY_CARGA_MEDIA, QUERY_CARGA_MAXIMA, QUERY_UTIL_FIM_SEMANA, QUERY_MEDIA_MENSAL, QUERY_PERCENT_MEDIA, QUERY_PERCENT_MAIOR_E_MENOR, QUERY_BALANCO_CARGA
+import config
 import streamlit as st
 import pandas as pd
 import sqlite3
@@ -14,12 +14,12 @@ def formata_valor(valor):
 
 @st.cache_resource
 def get_connection():
-    return sqlite3.connect(DATABASE_PATH, check_same_thread=False)
+    return sqlite3.connect(config.DATABASE_PATH, check_same_thread=False)
 
 
 @st.cache_data
 def carregar_dados(nome_arquivo_sql: str):
-    caminho = QUERIES_DIR / nome_arquivo_sql
+    caminho = config.QUERIES_DIR / nome_arquivo_sql
 
     try:
         with open(caminho, encoding="utf-8") as f:
@@ -37,16 +37,17 @@ def carregar_dados(nome_arquivo_sql: str):
 
 
 
-df_carga_media = carregar_dados(QUERY_CARGA_MEDIA)
-df_carga_maxima = carregar_dados(QUERY_CARGA_MAXIMA)
-df_util_fim_semana = carregar_dados(QUERY_UTIL_FIM_SEMANA)
-df_media_mensal = carregar_dados(QUERY_MEDIA_MENSAL)
-df_percent_media_fonte = carregar_dados(QUERY_PERCENT_MEDIA)
-df_maior_menor_percent = carregar_dados(QUERY_PERCENT_MAIOR_E_MENOR)
-df_balanco_carga = carregar_dados(QUERY_BALANCO_CARGA)
+df_carga_media = carregar_dados(config.QUERY_CARGA_MEDIA)
+df_carga_maxima = carregar_dados(config.QUERY_CARGA_MAXIMA)
+df_util_fim_semana = carregar_dados(config.QUERY_UTIL_FIM_SEMANA)
+df_media_mensal = carregar_dados(config.QUERY_MEDIA_MENSAL)
+df_percent_media_fonte = carregar_dados(config.QUERY_PERCENT_MEDIA)
+df_maior_menor_percent = carregar_dados(config.QUERY_PERCENT_MAIOR_E_MENOR)
+df_balanco_carga = carregar_dados(config.QUERY_BALANCO_CARGA)
+df_ena_ear = carregar_dados(config.QUERY_ENA_EAR)
 
 
-tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "Balanço VS Carga"])
+tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "ENA VS EAR"])
 
 with tab1:
     # query da carga média
@@ -102,8 +103,19 @@ with tab2:
 
 with tab3:
 
-    st.subheader("Comparativo entre o Balanço e a Carga")
-    fig = px.scatter(
-        df_balanco_carga,
-        x=""
+    subsistema_sel = st.selectbox(
+        "Selecione o Subsistema",
+        options=df_ena_ear["subsistema"].unique()
     )
+
+    df_filtrado = df_ena_ear[df_ena_ear["subsistema"] == subsistema_sel]
+
+    st.subheader("Comparativo entre ENA e EAR")
+    fig = px.line(
+        df_filtrado,
+        x="dia",
+        y=["ena_percentual", "ear_percentual"],
+        title=f"Evolução Temporal ENA vs EAR - {subsistema_sel}",
+        labels={"value": "Percentual (%)", "variable": "Métrica"},
+    )
+    st.plotly_chart(fig, use_container_width=True)
