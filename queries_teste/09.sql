@@ -20,5 +20,7 @@ SELECT
             WHEN val_intercambiomwmed >= 0 THEN nom_subsistema_destino
             ELSE nom_subsistema_origem
         END AS importador,
-        round(abs(val_intercambiomwmed), 2) AS valor
+        round(sum(abs(val_intercambiomwmed)), 2) AS valor
 FROM intercambio_consolidado
+GROUP BY ano, exportador, importador
+ORDER BY ano, valor DESC;

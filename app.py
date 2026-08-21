@@ -45,6 +45,7 @@ df_percent_media_fonte = carregar_dados(config.QUERY_PERCENT_MEDIA)
 df_maior_menor_percent = carregar_dados(config.QUERY_PERCENT_MAIOR_E_MENOR)
 df_balanco_carga = carregar_dados(config.QUERY_BALANCO_CARGA)
 df_ena_ear = carregar_dados(config.QUERY_ENA_EAR)
+df_intercambio = carregar_dados(config.QUERY_INTERCAMBIO)
 
 
 tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "ENA VS EAR"])
@@ -117,5 +118,19 @@ with tab3:
         y=["ena_percentual", "ear_percentual"],
         title=f"Evolução Temporal ENA vs EAR - {subsistema_sel}",
         labels={"value": "Percentual (%)", "variable": "Métrica"},
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.subheader("Intercâmbio de energia: Exportador vs Importador")
+    df_intercambio["rota"] = df_intercambio["exportador"] + " ➔ " + df_intercambio["importador"]
+
+    fig = px.bar(
+        df_intercambio,
+        x="ano",
+        y="valor",
+        color="rota",
+        barmode="group",
+        title="Evolução do Intercâmbio de Energia por Rota (2023-2025)",
+        labels={"valor": "Energia (MWmed)", "ano": "Ano", "rota": "Fluxo"},
     )
     st.plotly_chart(fig, use_container_width=True)
