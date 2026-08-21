@@ -3,6 +3,7 @@ from config import QUERIES_DIR, DATABASE_PATH, QUERY_CARGA_MEDIA, QUERY_CARGA_MA
 import streamlit as st
 import pandas as pd
 import sqlite3
+import plotly.express as px
 
 
 st.title("ONS - Dados Abertos")
@@ -42,9 +43,10 @@ df_util_fim_semana = carregar_dados(QUERY_UTIL_FIM_SEMANA)
 df_media_mensal = carregar_dados(QUERY_MEDIA_MENSAL)
 df_percent_media_fonte = carregar_dados(QUERY_PERCENT_MEDIA)
 df_maior_menor_percent = carregar_dados(QUERY_PERCENT_MAIOR_E_MENOR)
+df_balanco_carga = carregar_dados(QUERY_BALANCO_CARGA)
 
 
-tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "Qualidade do Dado"])
+tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "Balanço VS Carga"])
 
 with tab1:
     # query da carga média
@@ -97,3 +99,11 @@ with tab2:
     # query do maior/menor percentual médio da energia eólica
     st.subheader("Participação da geração eólica: maior e menor")
     
+
+with tab3:
+
+    st.subheader("Comparativo entre o Balanço e a Carga")
+    fig = px.scatter(
+        df_balanco_carga,
+        x=""
+    )

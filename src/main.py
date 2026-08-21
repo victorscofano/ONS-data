@@ -32,6 +32,15 @@ def main():
     df_balanco = consolidate(caminhos_balanco)
     load(df_balanco, "data/processed/database.db", "balanco_consolidado")
 
+    # carrega os arquivos de EAR diario dos subsistemas
+    caminhos_ear =sorted(glob.glob("data/raw/EAR_DIARIO_SUBSISTEMA_*.csv"))
+    df_ear = consolidate(caminhos_ear)
+    load(df_ear, "data/processed/database.db", "ear_consolidado")
+
+    # carrega os arquivos de ENA diario dos subsistemas
+    caminhos_ena =sorted(glob.glob("data/raw/ENA_DIARIO_SUBSISTEMA_*.csv"))
+    df_ena = consolidate(caminhos_ena)
+    load(df_ena, "data/processed/database.db", "ena_consolidado")
 
 
 if __name__ == "__main__":

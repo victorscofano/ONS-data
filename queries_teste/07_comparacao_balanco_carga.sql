@@ -19,6 +19,7 @@ WITH cargaBalancoPorDia AS (
             avg(val_carga) AS mediaCargaBalanco
                 
     FROM balanco_consolidado
+    WHERE id_subsistema != 'SIN'
     GROUP BY id_subsistema, dia
 ),
 
@@ -30,7 +31,7 @@ tb_join AS (
         val_cargaenergiamwmed
     FROM cargaBalancoPorDia AS t1
 
-    INNER JOIN carga_consolidada AS t2
+    LEFT JOIN carga_consolidada AS t2
     ON t1.id_subsistema = t2.id_subsistema
     AND t1.dia = t2.din_instante
 ),
@@ -53,9 +54,10 @@ tb_diferencas AS (
 SELECT 
         id_subsistema,
         dia,
-        round(difAbsoluta, 13) AS "difAbsoluta(%)",
+        round(difAbsoluta, 13) AS dif_absoluta,
         classificacao
 
 FROM tb_diferencas
 
+WHERE dif_absoluta ISNULL
 ORDER BY difAbsoluta DESC

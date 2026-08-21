@@ -96,3 +96,24 @@ Esse bloco deveria abrir o dashboard e o README, não fechar — é o diferencia
 - **Evite pizza/donut com mais de 3-4 fatias** — vira ilegível; barras empilhadas resolvem o mesmo problema com mais clareza.
 - **Sempre rotule a unidade nos eixos** (MWmed, %, data) — um gráfico sem unidade obriga quem olha a adivinhar.
 - **Ordene por valor, não por ordem alfabética**, em qualquer comparação categórica (query 1, por exemplo) — leitura fica imediata.
+
+---
+Datasets relevantes além dos que você já usa (carga/balanço):
+
+- EAR Diário por Subsistema — energia armazenada nos reservatórios (%)
+- ENA Diário por Subsistema — energia natural afluente (chuva/vazão convertida em energia)
+- Intercâmbios Entre Subsistemas — fluxo de energia entre regiões
+- CMO Semanal / CMO Semi-Horário — preço da energia (Custo Marginal de Operação)
+- Interrupção de Carga — eventos reais de desligamento forçado, com causa
+- Restrição de Operação por Constrained-off de Usinas Eólicas/Fotovoltaicas — energia "perdida" por restrição da rede
+- Geração por Usina em Base Horária — granularidade por usina, não só por subsistema
+
+Algumas ideias de análise que aproveitam ISSO.
+
+| # | O que faria | Datasets | Por que é melhor que a antiga |
+| --- | --- | --- | --- |
+| A	| Correlação entre ENA (chuva) e nível do reservatório (EAR) por subsistema ao longo do tempo | ENA + EAR diário |	Conta uma história real (seca/cheia afetando o sistema), não só uma checagem de qualidade de dado |
+| B	| Quais subsistemas mais "exportam" e mais "importam" energia via intercâmbio, e como isso mudou entre 2023-2025 | Intercâmbios Entre Subsistemas | Mostra a interdependência real do SIN — coisa que ninguém espera de um portfólio básico |
+| C	| Volatilidade do CMO (preço) por subsistema — quando e onde a energia ficou mais cara, cruzando com nível baixo de reservatório | 	CMO Semanal + EAR | Liga preço a causa física, mostra raciocínio de negócio, não só SQL |
+| D	| Curtailment eólico/solar: quanta energia deixou de ser gerada por restrição da rede, por subsistema e por ano | Constrained-off Eólica/Fotovoltaica | Tema atual (crescimento de renováveis no Brasil) , gráfico de tendência crescente é visualmente forte | 
+| E	| Causas mais comuns de interrupção de carga por subsistema/ano — isso sim captura os "eventos naturais" que você mencionou (enchente, vendaval etc.) | Interrupção de Carga | Substitui diretamente a ideia da query 8 (achar "divergência") por algo que de fato existe no dado: causas reais catalogadas | 
