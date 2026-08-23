@@ -4,6 +4,8 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import plotly.express as px
+from plotly.subplots import make_subplots
+import seaborn as sns
 
 
 st.title("ONS - Dados Abertos")
@@ -46,9 +48,10 @@ df_maior_menor_percent = carregar_dados(config.QUERY_PERCENT_MAIOR_E_MENOR)
 df_balanco_carga = carregar_dados(config.QUERY_BALANCO_CARGA)
 df_ena_ear = carregar_dados(config.QUERY_ENA_EAR)
 df_intercambio = carregar_dados(config.QUERY_INTERCAMBIO)
+df_cmo_ear = carregar_dados(config.QUERY_CMO)
 
 
-tab1, tab2, tab3, = st.tabs(["Consumo", "Geração", "ENA VS EAR"])
+tab1, tab2, tab3, tab4 = st.tabs(["Consumo", "Geração", "ENA VS EAR", "CMO"])
 
 with tab1:
     # query da carga média
@@ -98,9 +101,6 @@ with tab2:
         stack=True
     )
 
-    # query do maior/menor percentual médio da energia eólica
-    st.subheader("Participação da geração eólica: maior e menor")
-    
 
 with tab3:
 
@@ -134,3 +134,23 @@ with tab3:
         labels={"valor": "Energia (MWmed)", "ano": "Ano", "rota": "Fluxo"},
     )
     st.plotly_chart(fig, use_container_width=True)
+
+with tab4:
+    st.subheader("EAR vs CMO")
+
+    df_cmo_ear["posicao"] = df_cmo_ear["saldo_intercambio_semana"].apply(
+        lambda x: "Exportador" if x > 0 else "Importador"
+    )
+
+    fig = px.scatter(
+        df_cmo_ear,
+        x="ear_media_semana",
+        y="val_cmomediasemanal",
+        color="posicao", 
+        hover_data=["din_instante", "ena_media_semana", "saldo_intercambio_semana"],
+        labels={"ear_media_semana": "EAR (%)", "val_cmomediasemanal": "CMO médio (R$/MWh)"}
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+    

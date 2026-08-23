@@ -47,5 +47,10 @@ def main():
     df_intercamb = consolidate(caminhos_intercamb)
     load(df_intercamb, "data/processed/database.db", "intercambio_consolidado")
 
+    # carrega os arquivos de CMO dos subsistemas
+    caminhos_cmo = sorted(glob.glob("data/raw/CMO_SEMANAL_*.csv"))
+    df_cmo = consolidate(caminhos_cmo)
+    load(df_cmo, "data/processed/database.db", "cmo_consolidado")
+
 if __name__ == "__main__":
     main()
