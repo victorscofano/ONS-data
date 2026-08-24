@@ -20,3 +20,6 @@ A Energia Natural Afluente (ENA) Bruta representa a energia produzível pela usi
 - **EAR diário por Subsistema**: Dados das grandezas de energia armazenada (EAR) em periodicidade diária por Subsistemas.
 
 A Energia Armazenada (EAR) representa a energia associada ao volume de água disponível nos reservatórios que pode ser convertido em geração na própria usina e em todas as usinas à jusante na cascata. A grandeza de EAR leva em conta nível verificado nos reservatórios na data de referência. A grandeza de EAR máxima representa a capacidade de armazenamento caso todos os reservatórios do sistema estivessem cheios. A grandeza de EAR para o subsistema à jusante considera a utilização da água do reservatório para produzir energia em uma usina à jusante que está em um subsistema diferente.
+
+
+[Acesse!](https://ons-data.streamlit.app)
